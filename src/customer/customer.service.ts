@@ -8,7 +8,7 @@ import { Customer } from './entities/customer.entity';
 
 @Injectable()
 export class CustomerService {
-  constructor(private readonly entityManager: EntityManager) {}
+  constructor(private readonly entityManager: EntityManager) { }
 
   async create(createCustomerDto: CreateCustomerDto): Promise<Customer> {
     const existingCustomer = await this.entityManager.findOne(Customer, {
@@ -24,6 +24,12 @@ export class CustomerService {
     this.entityManager.assign(customer, createCustomerDto);
 
     await this.entityManager.persistAndFlush(customer);
+
+    return customer;
+  }
+
+  async findOne(id: number) {
+    const customer = await this.entityManager.findOne(Customer, id)
 
     return customer;
   }
