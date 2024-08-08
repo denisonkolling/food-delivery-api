@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { CreateCustomerDto } from './dto/create-customer.dto';
-import { EntityManager } from '@mikro-orm/postgresql';
+import {
+  EntityManager,
+  UniqueConstraintViolationException,
+} from '@mikro-orm/postgresql';
 import { Customer } from './entities/customer.entity';
 
 @Injectable()
@@ -8,17 +11,19 @@ export class CustomerService {
   constructor(private readonly entityManager: EntityManager) {}
 
   async create(createCustomerDto: CreateCustomerDto): Promise<Customer> {
+    const existingCustomer = await this.entityManager.findOne(Customer, {
+      email: createCustomerDto.email,
+    });
+
+    if (existingCustomer) {
+      throw new UniqueConstraintViolationException(
+        new Error('A customer with this email already exists.'),
+      );
+    }
     const customer = new Customer();
     this.entityManager.assign(customer, createCustomerDto);
 
-    try {
-      await this.entityManager.persistAndFlush(customer);
-    } catch (error) {
-      if (error) {
-        throw new Error('Error during saving Customer data');
-      }
-      throw error;
-    }
+    await this.entityManager.persistAndFlush(customer);
 
     return customer;
   }
