@@ -6,15 +6,17 @@ import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { ProductModule } from 'src/product/product.module';
 import { CustomerModule } from 'src/customer/customer.module';
 import { RestaurantModule } from 'src/restaurant/restaurant.module';
+import { OrderItemModule } from 'src/order-item/order-item.module';
 
 @Module({
   imports: [MikroOrmModule.forFeature([Order]),
-  ProductModule,
-  CustomerModule,
-  RestaurantModule,
-],
+    ProductModule,
+    CustomerModule,
+    RestaurantModule,
+    OrderItemModule
+  ],
   controllers: [OrderController],
   providers: [OrderService],
   exports: [OrderService]
 })
-export class OrderModule {}
+export class OrderModule { }

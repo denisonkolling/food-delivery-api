@@ -21,10 +21,9 @@ import { CategoryModule } from './category/category.module';
     OrderItemModule,
     CustomerModule,
     PaymentModule,
-    OrderItemModule,
     CategoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

@@ -8,5 +8,6 @@ import { MikroOrmModule } from '@mikro-orm/nestjs';
   imports: [MikroOrmModule.forFeature([OrderItem])],
   controllers: [OrderItemController],
   providers: [OrderItemService],
+  exports: [OrderItemService]
 })
-export class OrderItemModule {}
+export class OrderItemModule { }
