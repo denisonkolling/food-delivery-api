@@ -30,4 +30,14 @@ export class OrderItemService {
 
   }
 
+  createOrderItem(order: Order, product: Product, quantity: number, price: number): OrderItem {
+    const orderItem = new OrderItem();
+    orderItem.order = order;
+    orderItem.product = product;
+    orderItem.quantity = quantity;
+    orderItem.price = price;
+    order.orderItems.add(orderItem);
+    return orderItem;
+  }
+
 }
