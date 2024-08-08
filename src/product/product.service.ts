@@ -7,7 +7,7 @@ import { Category } from 'src/category/entities/category.entity';
 
 @Injectable()
 export class ProductService {
-  constructor(private readonly entityManager: EntityManager) {}
+  constructor(private readonly entityManager: EntityManager) { }
 
   async create(createProductDto: CreateProductDto): Promise<Product> {
     const product = new Product();
@@ -53,6 +53,11 @@ export class ProductService {
 
     await this.entityManager.persistAndFlush(product);
 
+    return product;
+  }
+
+  async findOne(id: number) {
+    const product = this.entityManager.findOne(Product, id);
     return product;
   }
 }
