@@ -1,6 +1,12 @@
+import { ApiProperty } from '@nestjs/swagger'
+import { OrderItemDto } from '../../order-item/dto/order-item.dto'
 export class CreateOrderDto {
-    customer: { id: number };
-    restaurant: { id: number };
+    @ApiProperty()
+    customerId: number;
+    @ApiProperty()
+    restaurantId: number;
+    @ApiProperty()
     status: string;
-    items: { productNumber: number; quantity: number }[];
+    @ApiProperty({ type: [OrderItemDto] })
+    items: OrderItemDto[];
 }

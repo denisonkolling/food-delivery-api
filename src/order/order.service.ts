@@ -3,7 +3,6 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Order } from './entities/order.entity';
 import { RestaurantService } from 'src/restaurant/restaurant.service';
-import { OrderItem } from 'src/order-item/entities/order-item.entity';
 import { CustomerService } from 'src/customer/customer.service';
 import { ProductService } from 'src/product/product.service';
 import { OrderItemService } from 'src/order-item/order-item.service';
@@ -25,10 +24,10 @@ export class OrderService {
     let totalOrderValue = 0;
 
     for (const item of createOrderDto.items) {
-      const product = await this.productService.findOne(item.productNumber);
+      const product = await this.productService.findOne(item.productId);
 
       if (!product) {
-        throw new NotFoundException(`Product with id ${item.productNumber} not found`);
+        throw new NotFoundException(`Product with id ${item.productId} not found`);
       }
 
       const orderItem = this.orderItemService.createOrderItem(order, product, item.quantity, product.price);
@@ -37,10 +36,10 @@ export class OrderService {
 
     order.totalAmount = totalOrderValue;
 
-    const restaurant = await this.restaurantService.findOne(createOrderDto.restaurant.id);
+    const restaurant = await this.restaurantService.findOne(createOrderDto.restaurantId);
     order.restaurant = restaurant;
 
-    const customer = await this.customerService.findOne(createOrderDto.customer.id);
+    const customer = await this.customerService.findOne(createOrderDto.customerId);
     order.customer = customer;
 
     this.entityManager.persistAndFlush(order);
