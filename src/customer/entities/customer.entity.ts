@@ -15,13 +15,10 @@ export class Customer {
   id!: number;
 
   @Property()
-  name!: string;
-
-  @Property({ unique: true })
-  email!: string;
+  firstName!: string;
 
   @Property()
-  password!: string;
+  lastName!: string;
 
   @Property()
   address!: string;
@@ -29,7 +26,7 @@ export class Customer {
   @Property()
   phoneNumber!: string;
 
-  @OneToOne(() => User, user => user.customer,  { mappedBy: 'customer' })
+  @OneToOne(() => User, user => user.customer, { mappedBy: 'customer', owner: true, unique: true })
   user!: User;
 
   @OneToMany(() => Order, (order) => order.customer)

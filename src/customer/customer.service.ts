@@ -5,23 +5,25 @@ import {
   UniqueConstraintViolationException,
 } from '@mikro-orm/postgresql';
 import { Customer } from './entities/customer.entity';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class CustomerService {
-  constructor(private readonly entityManager: EntityManager) { }
+  constructor(private readonly entityManager: EntityManager,
+    private readonly userService: UserService,
+  ) { }
 
   async create(createCustomerDto: CreateCustomerDto): Promise<Customer> {
-    const existingCustomer = await this.entityManager.findOne(Customer, {
-      email: createCustomerDto.email,
-    });
 
-    if (existingCustomer) {
-      throw new UniqueConstraintViolationException(
-        new Error('A customer with this email already exists.'),
-      );
-    }
+    const user = await this.userService.findUserById(createCustomerDto.userId);
+
     const customer = new Customer();
-    this.entityManager.assign(customer, createCustomerDto);
+
+    customer.user = user;
+
+    const { userId, ...dtoWithoutUserId } = createCustomerDto;
+
+    this.entityManager.assign(customer, dtoWithoutUserId);
 
     await this.entityManager.persistAndFlush(customer);
 
