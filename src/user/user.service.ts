@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 
 import {
@@ -31,8 +31,12 @@ export class UserService {
 
   }
 
-  async findUserById(id: number): Promise<User> {
-    const user = await this.entityManager.findOne(User, id)
+  async findUserById(userId: number): Promise<User> {
+    const user = await this.entityManager.findOne(User, userId)
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
     return user;
   }
+
 }
