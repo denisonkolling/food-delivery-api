@@ -15,7 +15,7 @@ export class Restaurant {
   @PrimaryKey()
   id!: number;
 
-  @OneToOne(() => User, user => user.restaurant, { mappedBy: 'restaurant' })
+  @OneToOne(() => User, user => user.restaurant, { mappedBy: 'restaurant', owner: true, unique: true })
   user!: User;
 
   @Property()
