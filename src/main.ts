@@ -2,10 +2,11 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { UniqueConstraintExceptionFilter } from './common/filters/unique-constraint-conflict-exception.filter';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { AllExceptionsFilter } from './common/filters/all-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.useGlobalFilters(new UniqueConstraintExceptionFilter());
+  app.useGlobalFilters(new UniqueConstraintExceptionFilter(), new AllExceptionsFilter());
   const config = new DocumentBuilder()
     .setTitle('Food Delivery')
     .setDescription('The food delivery API application')
