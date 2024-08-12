@@ -1,3 +1,11 @@
-import { User } from '../entities/user.entity';
+import { ApiProperty } from "@nestjs/swagger";
 
-export class CreateUserDto extends User {}
+export class CreateUserDto {
+
+    @ApiProperty()
+    email!: string;
+
+    @ApiProperty()
+    password!: string;
+
+}

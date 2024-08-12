@@ -7,15 +7,6 @@ export class User {
   @PrimaryKey()
   id!: number;
 
-  @Property()
-  firstName!: string;
-
-  @Property()
-  lastName!: string;
-
-  @Property({ unique: true })
-  username!: string;
-
   @Property({ unique: true })
   email!: string;
 
@@ -34,9 +25,9 @@ export class User {
   @Property({ columnType: 'enum' })
   accountStatus: 'active' | 'suspended' | 'inactive' = 'active';
 
-  @OneToOne(() => Customer, customer => customer.user, { nullable: true, owner: true })
+  @OneToOne(() => Customer, customer => customer.user, { nullable: true})
   customer?: Customer;
 
-  @OneToOne(() => Restaurant, restaurant => restaurant.user, { nullable: true, owner: true })
+  @OneToOne(() => Restaurant, restaurant => restaurant.user, { nullable: true})
   restaurant?: Restaurant;
 }

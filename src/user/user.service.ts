@@ -12,27 +12,27 @@ export class UserService {
   constructor(private readonly entityManager: EntityManager) { }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    try {
-      const existingUser = await this.entityManager.findOne(User, {
-        email: createUserDto.email,
-      });
 
-      if (existingUser) {
-        throw new UniqueConstraintViolationException(
-          new Error(`An user with email ${createUserDto.email}already exists.`),
-        );
-      }
+    const existingUser = await this.entityManager.findOne(User, {
+      email: createUserDto.email,
+    });
 
-      const user = new User();
-      this.entityManager.assign(user, createUserDto);
-      await this.entityManager.persistAndFlush(user);
-
-      return user;
-
-    } catch (error) {
-      throw new InternalServerErrorException(
-        'An error occurred while saving user data',
+    if (existingUser) {
+      throw new UniqueConstraintViolationException(
+        new Error(`An user with email ${createUserDto.email} already exists.`),
       );
     }
+
+    const user = new User();
+    this.entityManager.assign(user, createUserDto);
+    await this.entityManager.persistAndFlush(user);
+
+    return user;
+
+  }
+
+  async findUserById(id: number): Promise<User> {
+    const user = await this.entityManager.findOne(User, id)
+    return user;
   }
 }
