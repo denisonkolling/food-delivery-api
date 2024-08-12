@@ -5,6 +5,6 @@ export class Category {
   @PrimaryKey()
   id!: number;
 
-  @Property()
+  @Property({ unique: true })
   name!: string;
 }

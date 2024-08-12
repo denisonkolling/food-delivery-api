@@ -1,4 +1,6 @@
-import { Entity, PrimaryKey, Property } from '@mikro-orm/core';
+import { Entity, OneToOne, PrimaryKey, Property } from '@mikro-orm/core';
+import { Customer } from 'src/customer/entities/customer.entity';
+import { Restaurant } from 'src/restaurant/entities/restaurant.entity';
 
 @Entity({ tableName: 'tab_users' })
 export class User {
@@ -11,24 +13,30 @@ export class User {
   @Property()
   lastName!: string;
 
-  @Property()
+  @Property({ unique: true })
   username!: string;
 
-  @Property({ type: 'bigint' })
-  document!: number;
-
-  @Property()
+  @Property({ unique: true })
   email!: string;
 
   @Property()
   password!: string;
 
-  @Property({ onCreate: () => new Date() })
-  createdAt = new Date();
+  @Property()
+  createdAt: Date = new Date();
 
   @Property({ onUpdate: () => new Date() })
-  updatedAt = new Date();
+  updatedAt: Date = new Date();
 
-  @Property({ default: false })
-  isDeleted: boolean = false;
+  @Property({ nullable: true })
+  deletedAt?: Date;
+
+  @Property({ columnType: 'enum' })
+  accountStatus: 'active' | 'suspended' | 'inactive' = 'active';
+
+  @OneToOne(() => Customer, customer => customer.user, { nullable: true, owner: true })
+  customer?: Customer;
+
+  @OneToOne(() => Restaurant, restaurant => restaurant.user, { nullable: true, owner: true })
+  restaurant?: Restaurant;
 }

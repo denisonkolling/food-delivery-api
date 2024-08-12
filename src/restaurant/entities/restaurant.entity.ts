@@ -4,17 +4,25 @@ import {
   Property,
   OneToMany,
   Collection,
+  OneToOne,
 } from '@mikro-orm/core';
 import { Order } from 'src/order/entities/order.entity';
 import { Product } from 'src/product/entities/product.entity';
+import { User } from 'src/user/entities/user.entity';
 
 @Entity({ tableName: 'tab_restaurants' })
 export class Restaurant {
   @PrimaryKey()
   id!: number;
 
+  @OneToOne(() => User, user => user.restaurant, { mappedBy: 'restaurant' })
+  user!: User;
+
   @Property()
-  name!: string;
+  restaurantName!: string;
+
+  @Property()
+  cuisineType!: string;
 
   @Property()
   address!: string;
@@ -22,12 +30,9 @@ export class Restaurant {
   @Property()
   phoneNumber!: string;
 
-  @Property()
-  cuisineType!: string;
-
-  @OneToMany(() => Product, (product) => product.restaurant)
+  @OneToMany(() => Product, product => product.restaurant)
   products = new Collection<Product>(this);
 
-  @OneToMany(() => Order, (order) => order.restaurant)
+  @OneToMany(() => Order, order => order.restaurant)
   orders = new Collection<Order>(this);
 }
