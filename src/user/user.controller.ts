@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Query } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ApiTags } from '@nestjs/swagger';
@@ -13,9 +13,9 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
-  @Get('email/:email')
-  async findUserByEmail(@Param('email') email: string) {
-    return this.userService.findUserByEmail(email);
+  @Get()
+  async findUserByEmail(@Query('email') email: string) {
+    return this.userService.findByEmail(email);
 
   }
 }
