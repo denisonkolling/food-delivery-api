@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 
 import {
@@ -6,33 +6,59 @@ import {
   UniqueConstraintViolationException,
 } from '@mikro-orm/postgresql';
 import { User } from './entities/user.entity';
+import { hashPassword } from '../common/helpers';
+import { UserResponseDto } from '../user/dto/response-user.dto'
+
 
 @Injectable()
 export class UserService {
   constructor(private readonly entityManager: EntityManager) { }
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
-    try {
-      const existingUser = await this.entityManager.findOne(User, {
-        email: createUserDto.email,
-      });
+  async create(createUserDto: CreateUserDto): Promise<UserResponseDto> {
 
-      if (existingUser) {
-        throw new UniqueConstraintViolationException(
-          new Error(`An user with email ${createUserDto.email}already exists.`),
-        );
-      }
+    const { email, password } = createUserDto;
 
-      const user = new User();
-      this.entityManager.assign(user, createUserDto);
-      await this.entityManager.persistAndFlush(user);
+    await this.ensureEmailIsUnique(email);
 
-      return user;
+    const hashedPassword = await hashPassword(password);
 
-    } catch (error) {
-      throw new InternalServerErrorException(
-        'An error occurred while saving user data',
+    const newUser = this.buildUser(createUserDto, hashedPassword);
+
+    await this.entityManager.persistAndFlush(newUser);
+
+    return new UserResponseDto(newUser);
+  }
+
+  async findUserById(userId: number): Promise<User> {
+    const user = await this.entityManager.findOne(User, userId)
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user;
+  }
+
+  async findByEmail(email: string): Promise<User> {
+    const user = await this.entityManager.findOne(User, { email: email });
+    return user;
+  }
+
+  private async ensureEmailIsUnique(email: string): Promise<void> {
+    const existingUser = await this.entityManager.findOne(User, { email });
+
+    if (existingUser) {
+      throw new UniqueConstraintViolationException(
+        new Error(`A user with email ${email} already exists.`),
       );
     }
   }
+
+  private buildUser(createUserDto: CreateUserDto, hashedPassword: string): User {
+    const user = new User();
+    this.entityManager.assign(user, {
+      ...createUserDto,
+      password: hashedPassword,
+    });
+    return user;
+  }
+
 }
