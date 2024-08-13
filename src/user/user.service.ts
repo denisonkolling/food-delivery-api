@@ -6,29 +6,27 @@ import {
   UniqueConstraintViolationException,
 } from '@mikro-orm/postgresql';
 import { User } from './entities/user.entity';
+import { hashPassword } from '../common/helpers';
+import { UserResponseDto } from '../user/dto/response-user.dto'
+
 
 @Injectable()
 export class UserService {
   constructor(private readonly entityManager: EntityManager) { }
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  async create(createUserDto: CreateUserDto): Promise<UserResponseDto> {
 
-    const existingUser = await this.entityManager.findOne(User, {
-      email: createUserDto.email,
-    });
+    const { email, password } = createUserDto;
 
-    if (existingUser) {
-      throw new UniqueConstraintViolationException(
-        new Error(`An user with email ${createUserDto.email} already exists.`),
-      );
-    }
+    await this.ensureEmailIsUnique(email);
 
-    const user = new User();
-    this.entityManager.assign(user, createUserDto);
-    await this.entityManager.persistAndFlush(user);
+    const hashedPassword = await hashPassword(password);
 
-    return user;
+    const newUser = this.buildUser(createUserDto, hashedPassword);
 
+    await this.entityManager.persistAndFlush(newUser);
+
+    return new UserResponseDto(newUser);
   }
 
   async findUserById(userId: number): Promise<User> {
@@ -44,6 +42,25 @@ export class UserService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
+    return user;
+  }
+
+  private async ensureEmailIsUnique(email: string): Promise<void> {
+    const existingUser = await this.entityManager.findOne(User, { email });
+
+    if (existingUser) {
+      throw new UniqueConstraintViolationException(
+        new Error(`A user with email ${email} already exists.`),
+      );
+    }
+  }
+
+  private buildUser(createUserDto: CreateUserDto, hashedPassword: string): User {
+    const user = new User();
+    this.entityManager.assign(user, {
+      ...createUserDto,
+      password: hashedPassword,
+    });
     return user;
   }
 
