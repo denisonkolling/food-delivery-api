@@ -9,13 +9,20 @@ export class AllExceptionsFilter implements ExceptionFilter {
         const response = ctx.getResponse<Response>();
         const status = exception.getStatus ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
 
+        const exceptionResponse = exception.getResponse();
+        const message =
+            (typeof exceptionResponse === 'object' && exceptionResponse.hasOwnProperty('message'))
+                ? (exceptionResponse as any).message
+                : exception.message;
+
         response
             .status(status)
             .json({
                 statusCode: status,
                 timestamp: new Date().toISOString(),
                 path: request.url,
-                message: exception.message || 'Internal server error',
+                error: exception.message || 'Internal server error',
+                details: Array.isArray(message) ? message : [message],
             });
     }
 }
