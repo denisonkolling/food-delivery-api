@@ -7,14 +7,14 @@ import {
 } from '@mikro-orm/postgresql';
 import { User } from './entities/user.entity';
 import { hashPassword } from '../common/helpers';
-import { UserResponseDto } from '../user/dto/response-user.dto'
+import { UserCreateResponseDto } from '../user/dto/response-create-user.dto'
 
 
 @Injectable()
 export class UserService {
   constructor(private readonly entityManager: EntityManager) { }
 
-  async create(createUserDto: CreateUserDto): Promise<UserResponseDto> {
+  async create(createUserDto: CreateUserDto): Promise<UserCreateResponseDto> {
 
     const { email, password } = createUserDto;
 
@@ -26,7 +26,10 @@ export class UserService {
 
     await this.entityManager.persistAndFlush(newUser);
 
-    return new UserResponseDto(newUser);
+    console.log(newUser)
+
+    return new UserCreateResponseDto(newUser);
+
   }
 
   async findUserById(userId: number): Promise<User> {
