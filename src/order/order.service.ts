@@ -45,4 +45,8 @@ export class OrderService {
     this.entityManager.persistAndFlush(order);
     return order;
   }
+
+  async findAll(): Promise<Order[]> {
+    return await this.entityManager.find(Order, {});
+  }
 }

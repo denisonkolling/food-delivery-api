@@ -4,8 +4,8 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { Product } from './entities/product.entity';
 import { ApiTags } from '@nestjs/swagger';
 
-@ApiTags('product')
-@Controller('product')
+@ApiTags('products')
+@Controller('products')
 export class ProductController {
   constructor(private readonly productService: ProductService) { }
 
@@ -18,4 +18,10 @@ export class ProductController {
   async findOne(@Param('id') id: number): Promise<Product> {
     return await this.productService.findOne(+id);
   }
+
+  @Get()
+  findAll() {
+    return this.productService.findAll();
+  }
+
 }

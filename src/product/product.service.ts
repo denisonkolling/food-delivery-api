@@ -19,10 +19,7 @@ export class ProductService {
 
     this.entityManager.assign(product, productData);
 
-    const restaurant = await this.entityManager.findOne(
-      Restaurant,
-      restaurantId,
-    );
+    const restaurant = await this.entityManager.findOne(Restaurant, restaurantId);
 
     if (!restaurant) {
       throw new NotFoundException(
@@ -59,5 +56,9 @@ export class ProductService {
   async findOne(id: number) {
     const product = this.entityManager.findOne(Product, id);
     return product;
+  }
+
+  async findAll(): Promise<Product[]> {
+    return await this.entityManager.find(Product, {});
   }
 }
