@@ -12,7 +12,7 @@ export class CreateRestaurantDto {
         description: 'Nome do restaurante como será exibido e registrado no sistema.',
         example: 'Satoshi Sushi'
     })
-    restaurantName!: string;
+    name!: string;
 
     @ApiProperty({
         description: 'Tipo de culinária do restaurante, utilizado para categorizar o restaurante em pesquisas.',

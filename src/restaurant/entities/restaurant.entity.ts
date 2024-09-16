@@ -19,7 +19,7 @@ export class Restaurant {
   user!: User;
 
   @Property()
-  restaurantName!: string;
+  name!: string;
 
   @Property()
   cuisineType!: string;

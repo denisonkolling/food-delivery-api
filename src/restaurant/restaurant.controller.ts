@@ -4,8 +4,8 @@ import { CreateRestaurantDto } from './dto/create-restaurant.dto';
 import { Restaurant } from './entities/restaurant.entity';
 import { ApiTags } from '@nestjs/swagger';
 
-@ApiTags('restaurant')
-@Controller('restaurant')
+@ApiTags('restaurants')
+@Controller('restaurants')
 export class RestaurantController {
   constructor(private readonly restaurantService: RestaurantService) { }
 

@@ -22,6 +22,6 @@ export class UserResponseDto {
     this.firstName = user.customer.firstName;
     this.lastName = user.customer.lastName;
     this.restaurantId = user.restaurant.id;
-    this.restaurantName = user.restaurant.restaurantName;
+    this.restaurantName = user.restaurant.name;
   }
 }
