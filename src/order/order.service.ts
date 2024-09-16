@@ -6,6 +6,9 @@ import { RestaurantService } from 'src/restaurant/restaurant.service';
 import { CustomerService } from 'src/customer/customer.service';
 import { ProductService } from 'src/product/product.service';
 import { OrderItemService } from 'src/order-item/order-item.service';
+import { OrderItem } from 'src/order-item/entities/order-item.entity';
+import { OrderMapper } from 'src/order-item/mappers/order.mapper';
+import { OrderResponseDTO } from './dto/order-response.dto';
 
 @Injectable()
 export class OrderService {
@@ -34,7 +37,7 @@ export class OrderService {
       totalOrderValue += orderItem.price * orderItem.quantity;
     }
 
-    order.totalAmount = totalOrderValue;
+    order.total = totalOrderValue;
 
     const restaurant = await this.restaurantService.findOne(createOrderDto.restaurantId);
     order.restaurant = restaurant;
@@ -48,5 +51,17 @@ export class OrderService {
 
   async findAll(): Promise<Order[]> {
     return await this.entityManager.find(Order, {});
+  }
+
+  async findById(id: number): Promise<OrderResponseDTO> {
+    const order = await this.entityManager.findOne(Order, id, {
+      populate: ['orderItems.product'],
+    });
+
+    if (!order) {
+      throw new NotFoundException(`Order with id ${id} not found`);
+    }
+
+    return OrderMapper.toOrderResponseDTO(order);
   }
 }

@@ -18,13 +18,13 @@ export class Order {
   id!: number;
 
   @Property()
-  orderDate: Date = new Date();
+  createdAt: Date = new Date();
 
   @Property()
   status!: string;
 
   @Property()
-  totalAmount!: number;
+  total!: number;
 
   @ManyToOne(() => Customer)
   customer!: Customer;
