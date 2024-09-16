@@ -17,4 +17,8 @@ export class CategoryService {
     return category;
   }
 
+  async findAll(): Promise<Category[]> {
+    return await this.entityManager.find(Category, {});
+  }
+
 }
