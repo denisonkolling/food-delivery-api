@@ -3,5 +3,6 @@ export class CreateProductDto {
   price: number;
   description: string;
   restaurant: number;
-  categories: number[];
+  category: number[];
+  imageUrl: string;
 }

@@ -12,7 +12,7 @@ export class ProductService {
   async create(createProductDto: CreateProductDto): Promise<Product> {
     const product = new Product();
     const {
-      categories: categoryIds,
+      category: categoryIds,
       restaurant: restaurantId,
       ...productData
     } = createProductDto;
