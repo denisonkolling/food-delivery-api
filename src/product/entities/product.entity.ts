@@ -28,4 +28,7 @@ export class Product {
 
   @ManyToMany(() => Category)
   categories = new Collection<Category>(this);
+
+  @Property()
+  imageUrl!: string;
 }
