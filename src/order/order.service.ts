@@ -42,7 +42,7 @@ export class OrderService {
     const restaurant = await this.restaurantService.findOne(createOrderDto.restaurantId);
     order.restaurant = restaurant;
 
-    const customer = await this.customerService.findOne(createOrderDto.customerId);
+    const customer = await this.customerService.findById(createOrderDto.customerId);
     order.customer = customer;
 
     this.entityManager.persistAndFlush(order);

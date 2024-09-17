@@ -1,9 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateCustomerDto } from './dto/create-customer.dto';
-import {
-  EntityManager,
-  UniqueConstraintViolationException,
-} from '@mikro-orm/postgresql';
+import { EntityManager } from '@mikro-orm/postgresql';
 import { Customer } from './entities/customer.entity';
 import { UserService } from 'src/user/user.service';
 
@@ -30,9 +27,8 @@ export class CustomerService {
     return customer;
   }
 
-  async findOne(id: number) {
+  async findById(id: number): Promise<Customer> {
     const customer = await this.entityManager.findOne(Customer, id)
-
     return customer;
   }
 }
