@@ -6,8 +6,7 @@ import { RestaurantService } from 'src/restaurant/restaurant.service';
 import { CustomerService } from 'src/customer/customer.service';
 import { ProductService } from 'src/product/product.service';
 import { OrderItemService } from 'src/order-item/order-item.service';
-import { OrderItem } from 'src/order-item/entities/order-item.entity';
-import { OrderMapper } from 'src/order-item/mappers/order.mapper';
+import { OrderMapper } from 'src/order/mappers/order.mapper';
 import { OrderResponseDTO } from './dto/order-response.dto';
 
 @Injectable()
@@ -42,20 +41,32 @@ export class OrderService {
     const restaurant = await this.restaurantService.findOne(createOrderDto.restaurantId);
     order.restaurant = restaurant;
 
-    const customer = await this.customerService.findById(createOrderDto.customerId);
+    const customer = await this.customerService.findCustomerById(createOrderDto.customerId);
     order.customer = customer;
 
     this.entityManager.persistAndFlush(order);
     return order;
   }
 
-  async findAll(): Promise<Order[]> {
-    return await this.entityManager.find(Order, {});
+
+  async findAll(): Promise<OrderResponseDTO[]> {
+    try {
+      const orders = await this.entityManager.find(Order, {}, {
+        populate: ['restaurant', 'customer', 'orderItems.product'],
+      });
+
+      const orderDTOs = orders.map(order => OrderMapper.toOrderResponseDTO(order));
+
+      return orderDTOs;
+    } catch (error) {
+      console.error('Erro ao buscar as ordens:', error);
+      throw new Error('Não foi possível buscar as ordens no momento.');
+    }
   }
 
   async findById(id: number): Promise<OrderResponseDTO> {
     const order = await this.entityManager.findOne(Order, id, {
-      populate: ['orderItems.product'],
+      populate: ['restaurant', 'customer', 'orderItems.product'],
     });
 
     if (!order) {

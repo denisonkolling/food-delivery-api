@@ -6,6 +6,8 @@ export class OrderResponseDTO {
   status: string;
   total: number;
   customerId: number;
+  customerName: string;
   restaurantId: number;
+  restaurantName: string;
   items: OrderItemResponseDTO[];
 }

@@ -9,15 +9,16 @@ export class OrderMapper {
       status: order.status,
       total: parseFloat(order.total.toString()),
       customerId: order.customer.id,
+      customerName: order.customer.firstName + ' ' + order.customer.lastName,
       restaurantId: order.restaurant.id,
+      restaurantName: order.restaurant.name,
       items: order.orderItems.map((item) => ({
-        id: item.id,
+        id: item.product.id,
         quantity: item.quantity,
-        productId: item.product.id,
-        productName: item.product.name,
+        name: item.product.name,
         price: parseFloat(item.product.price.toString()),
-        productDescription: item.product.description,
-        productImageUrl: item.product.imageUrl,
+        // productDescription: item.product.description,
+        // productImageUrl: item.product.imageUrl,
       }))
     };
   }
