@@ -54,7 +54,11 @@ export class ProductService {
   }
 
   async findOne(id: number) {
-    const product = this.entityManager.findOne(Product, id);
+    const product = await this.entityManager.findOne(Product, id);
+
+    if (!product) {
+      throw new NotFoundException(`Product with id ${id} not found`)
+    }
     return product;
   }
 
