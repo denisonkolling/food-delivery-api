@@ -3,6 +3,8 @@ import { CreateCustomerDto } from './dto/create-customer.dto';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Customer } from './entities/customer.entity';
 import { UserService } from 'src/user/user.service';
+import { CustomerMapper } from './mapper/customer.mapper.dto';
+import { CustomerResponseDTO } from './dto/customer-response.dto';
 
 @Injectable()
 export class CustomerService {
@@ -27,8 +29,13 @@ export class CustomerService {
     return customer;
   }
 
-  async findById(id: number): Promise<Customer> {
+  async findCustomerById(id: number): Promise<Customer> {
     const customer = await this.entityManager.findOne(Customer, id)
     return customer;
+  }
+
+  async findById(id: number): Promise<CustomerResponseDTO> {
+    const customer = await this.entityManager.findOne(Customer, id)
+    return CustomerMapper.toCustomerResponseDTO(customer);
   }
 }

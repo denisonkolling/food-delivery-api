@@ -3,6 +3,7 @@ import { CustomerService } from './customer.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { Customer } from './entities/customer.entity';
+import { CustomerResponseDTO } from './dto/customer-response.dto';
 
 @ApiTags('customers')
 @Controller('customers')
@@ -15,7 +16,7 @@ export class CustomerController {
   }
 
   @Get(':id')
-  async findById(@Param('id') id: number): Promise<Customer> {
+  async findById(@Param('id') id: number): Promise<CustomerResponseDTO> {
     return await this.customerService.findById(+id);
   }
 
