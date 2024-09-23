@@ -13,6 +13,7 @@ async function bootstrap() {
     .setTitle('Food Delivery')
     .setDescription('The food delivery API application')
     .setVersion('0.1')
+    .addBearerAuth()
     .addTag('user')
     .addTag('product')
     .addTag('order')
