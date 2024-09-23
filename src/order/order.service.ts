@@ -8,6 +8,8 @@ import { ProductService } from 'src/product/product.service';
 import { OrderItemService } from 'src/order-item/order-item.service';
 import { OrderMapper } from 'src/order/mappers/order.mapper';
 import { OrderResponseDTO } from './dto/order-response.dto';
+import { OrderStatus } from './enums/order-status.enum';
+import { OrderCancellationException } from 'src/common/exceptions/order-cancellation.exception';
 
 @Injectable()
 export class OrderService {
@@ -74,5 +76,26 @@ export class OrderService {
     }
 
     return OrderMapper.toOrderResponseDTO(order);
+  }
+
+  async deleteById(id: number): Promise<OrderResponseDTO> {
+    const order = await this.entityManager.findOne(Order, id, {
+      populate: ['restaurant', 'customer', 'orderItems.product'],
+    });
+
+    if (!order) {
+      throw new NotFoundException(`Order with id ${id} not found`);
+    }
+
+    if (order.status === OrderStatus.COMPLETED || order.status === OrderStatus.CANCELLED) {
+      throw new OrderCancellationException();
+    }
+
+    order.status = OrderStatus.CANCELLED;
+
+    this.entityManager.persistAndFlush(order);
+
+    return OrderMapper.toOrderResponseDTO(order);
+
   }
 }

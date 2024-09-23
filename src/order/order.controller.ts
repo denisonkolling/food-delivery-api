@@ -1,11 +1,12 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { OrderItem } from 'src/order-item/entities/order-item.entity';
 import { OrderResponseDTO } from './dto/order-response.dto';
 
 @ApiTags('orders')
+@ApiBearerAuth()
 @Controller('orders')
 export class OrderController {
   constructor(private readonly orderService: OrderService) { }
@@ -23,6 +24,11 @@ export class OrderController {
   @Get(':id')
   async findById(@Param('id') id: number): Promise<OrderResponseDTO> {
     return await this.orderService.findById(+id);
+  }
+
+  @Delete(':id')
+  async deleteById(@Param('id') id: number): Promise<OrderResponseDTO> {
+    return await this.orderService.deleteById(+id);
   }
 
 }
