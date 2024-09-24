@@ -38,4 +38,8 @@ export class CustomerService {
     const customer = await this.entityManager.findOne(Customer, id)
     return CustomerMapper.toCustomerResponseDTO(customer);
   }
+
+  async findAll(): Promise<Customer[]> {
+    return await this.entityManager.find(Customer, {});
+  }
 }
