@@ -14,13 +14,11 @@ async function bootstrap() {
     .setDescription('The food delivery API application')
     .setVersion('0.1')
     .addBearerAuth()
-    .addTag('user')
-    .addTag('product')
-    .addTag('order')
-    .addTag('customer')
-    .addTag('restaurant')
-    .addTag('order-item')
-    .addTag('payment')
+    .addTag('users')
+    .addTag('products')
+    .addTag('orders')
+    .addTag('customers')
+    .addTag('restaurants')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
