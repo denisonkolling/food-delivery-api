@@ -60,4 +60,8 @@ export class RestaurantService {
     }
     return restaurant;
   }
+
+  async findAll(): Promise<Restaurant[]> {
+    return await this.entityManager.find(Restaurant, {});
+  }
 }
