@@ -22,7 +22,7 @@ export class CustomerController {
   }
 
   @Get()
-  async findAll(): Promise<Customer[]> {
+  async findAll(): Promise<CustomerResponseDTO[]> {
     return await this.customerService.findAll();
   }
 

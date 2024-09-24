@@ -39,7 +39,17 @@ export class CustomerService {
     return CustomerMapper.toCustomerResponseDTO(customer);
   }
 
-  async findAll(): Promise<Customer[]> {
-    return await this.entityManager.find(Customer, {});
+  async findAll(): Promise<CustomerResponseDTO[]> {
+    try {
+      const customers = await this.entityManager.find(Customer, {});
+
+      const customerDTOs = customers.map(customer => CustomerMapper.toCustomerResponseDTO(customer));
+
+      return customerDTOs;
+
+    } catch (error) {
+      console.error('Erro ao buscar as ordens:', error);
+      throw new Error('Não foi possível buscar as ordens no momento.');
+    }
   }
 }
