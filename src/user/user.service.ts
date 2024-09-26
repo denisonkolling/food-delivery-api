@@ -1,6 +1,5 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-
 import {
   EntityManager,
   UniqueConstraintViolationException,
@@ -45,7 +44,7 @@ export class UserService {
     return user;
   }
 
-  private async ensureEmailIsUnique(email: string): Promise<void> {
+  public async ensureEmailIsUnique(email: string): Promise<void> {
     const existingUser = await this.entityManager.findOne(User, { email });
 
     if (existingUser) {
@@ -55,7 +54,7 @@ export class UserService {
     }
   }
 
-  private buildUser(createUserDto: CreateUserDto, hashedPassword: string): User {
+  public buildUser(createUserDto: CreateUserDto, hashedPassword: string): User {
     const user = new User();
     this.entityManager.assign(user, {
       ...createUserDto,
